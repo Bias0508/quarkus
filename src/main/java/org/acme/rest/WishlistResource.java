@@ -16,7 +16,7 @@ public class WishlistResource {
     private WishlistService wishlistService = new WishlistService();
 
     @POST
-    public Response addToWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") UUID customerId) {
+    public Response addToWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") String customerId) {
         System.out.println("add to wishlist");
         try {
             wishlistService.addToWishlist(customerId, eventId);
@@ -27,12 +27,10 @@ public class WishlistResource {
     }
 
     @DELETE
-    public Response removeFromWishlist(@QueryParam("eventId") String eventId, @QueryParam("customerId") String customerId) {
+    public Response removeFromWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") String customerId) {
         System.out.println("rem to wishlist");
         try {
-            UUID customerUUID = UUID.fromString(customerId);
-            UUID eventUUID = UUID.fromString(eventId);
-            wishlistService.removeFromWishlist(customerUUID, eventUUID);
+            wishlistService.removeFromWishlist(customerId, eventId);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid customer or event ID").build();
@@ -43,8 +41,7 @@ public class WishlistResource {
     public Response getWishlist(@QueryParam("customerId") String customerId) {
         System.out.println("get to wishlist");
         try {
-            UUID customerUUID = UUID.fromString(customerId);
-            Wishlist wishlist = wishlistService.getWishlist(customerUUID);
+            Wishlist wishlist = wishlistService.getWishlist(customerId);
             List<UUID> events = wishlist.getEvents();
             return Response.ok(events).build();
         } catch (IllegalArgumentException e) {

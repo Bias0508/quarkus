@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.UUID;
 
 public class Wishlist {
-    private UUID customerId;
+    private String customerId;
     private List<UUID> events;
 
-    public Wishlist(UUID customerId) {
+    public Wishlist(String customerId) {
         this.customerId = customerId;
         this.events = new ArrayList<>();
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 

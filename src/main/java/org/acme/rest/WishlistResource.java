@@ -1,12 +1,12 @@
 package org.acme.rest;
 
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.*;
-import org.acme.domain.Wishlist;
-import org.acme.domain.WishlistService;
+        import jakarta.ws.rs.*;
+        import jakarta.ws.rs.core.*;
+        import org.acme.domain.Wishlist;
+        import org.acme.domain.WishlistService;
 
-import java.util.List;
-import java.util.UUID;
+        import java.util.List;
+        import java.util.UUID;
 
 @Path("/wishlist")
 @Produces(MediaType.APPLICATION_JSON)
@@ -15,7 +15,8 @@ public class WishlistResource {
 
     private WishlistService wishlistService = new WishlistService();
 
-    @POST
+    @GET
+    @Path("/add")
     public Response addToWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") String customerId) {
         System.out.println("add to wishlist");
         try {
@@ -26,7 +27,8 @@ public class WishlistResource {
         }
     }
 
-    @DELETE
+    @GET
+    @Path("/remove")
     public Response removeFromWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") String customerId) {
         System.out.println("rem to wishlist");
         try {
@@ -38,6 +40,7 @@ public class WishlistResource {
     }
 
     @GET
+    @Path("display")
     public Response getWishlist(@QueryParam("customerId") String customerId) {
         System.out.println("get to wishlist");
         try {

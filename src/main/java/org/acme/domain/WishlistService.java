@@ -2,36 +2,46 @@ package org.acme.domain;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @ApplicationScoped
 public class WishlistService {
-    private final Map<String, Wishlist> wishlists = new HashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Path wishlistFile = Path.of("src", "main", "resources", "wishlist.json");
+    private Map<String, Wishlist> wishlists;
+    private ObjectMapper objectMapper;
+    private Path jsonFilePath;
 
     public WishlistService() {
-        loadWishlistFromFile();
+        wishlists = new HashMap<>();
+        objectMapper = new ObjectMapper();
+        jsonFilePath = Paths.get("C:\\Users\\tobia\\Desktop\\FH\\quarkus\\src\\main\\resources\\wishlist.json");
+
+        // loads wishlist at the start
+        loadWishlistsFromFile();
     }
 
     public void addToWishlist(String customerId, UUID eventId) {
         Wishlist wishlist = wishlists.getOrDefault(customerId, new Wishlist(customerId));
         wishlist.addEvent(eventId);
         wishlists.put(customerId, wishlist);
-        saveWishlistToFile();
+        saveWishlistsToFile();
     }
 
     public void removeFromWishlist(String customerId, UUID eventId) {
         Wishlist wishlist = wishlists.get(customerId);
         if (wishlist != null) {
             wishlist.removeEvent(eventId);
-            saveWishlistToFile();
+            saveWishlistsToFile();
         }
     }
 
@@ -47,26 +57,25 @@ public class WishlistService {
         return List.of();
     }
 
-    private void loadWishlistFromFile() {
+    private void loadWishlistsFromFile() {
         try {
-            if (Files.exists(wishlistFile)) {
-                byte[] fileBytes = Files.readAllBytes(wishlistFile);
-                List<Wishlist> loadedWishlists = objectMapper.readValue(fileBytes, new TypeReference<List<Wishlist>>() {
-                });
-                for (Wishlist wishlist : loadedWishlists) {
-                    wishlists.put(wishlist.getCustomerId(), wishlist);
-                }
+            if (Files.exists(jsonFilePath)) {
+                String jsonContent = Files.readString(jsonFilePath);
+                TypeReference<HashMap<String, Wishlist>> typeReference = new TypeReference<>() {};
+                wishlists = objectMapper.readValue(jsonContent, typeReference);
+            } else {
+                wishlists = new HashMap<>();
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception properly
+            e.printStackTrace();
         }
     }
 
-    private void saveWishlistToFile() {
+
+    private void saveWishlistsToFile() {
         try {
-            List<Wishlist> wishlistList = new ArrayList<>(wishlists.values());
-            byte[] fileBytes = objectMapper.writeValueAsBytes(wishlistList);
-            Files.write(wishlistFile, fileBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            String jsonContent = objectMapper.writeValueAsString(wishlists);
+            Files.writeString(jsonFilePath, jsonContent, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }

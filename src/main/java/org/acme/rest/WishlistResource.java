@@ -1,12 +1,12 @@
 package org.acme.rest;
 
-        import jakarta.ws.rs.*;
-        import jakarta.ws.rs.core.*;
-        import org.acme.domain.Wishlist;
-        import org.acme.domain.WishlistService;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import org.acme.domain.Wishlist;
+import org.acme.domain.WishlistService;
 
-        import java.util.List;
-        import java.util.UUID;
+import java.util.List;
+import java.util.UUID;
 
 @Path("/wishlist")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +30,7 @@ public class WishlistResource {
     @GET
     @Path("/remove")
     public Response removeFromWishlist(@QueryParam("eventId") UUID eventId, @QueryParam("customerId") String customerId) {
-        System.out.println("rem to wishlist");
+        System.out.println("rem from wishlist");
         try {
             wishlistService.removeFromWishlist(customerId, eventId);
             return Response.ok().build();
@@ -42,7 +42,7 @@ public class WishlistResource {
     @GET
     @Path("display")
     public Response getWishlist(@QueryParam("customerId") String customerId) {
-        System.out.println("get to wishlist");
+        System.out.println("get wishlist");
         try {
             Wishlist wishlist = wishlistService.getWishlist(customerId);
             List<UUID> events = wishlist.getEvents();

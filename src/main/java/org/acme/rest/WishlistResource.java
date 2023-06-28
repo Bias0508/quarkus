@@ -46,7 +46,7 @@ public class WishlistResource {
         try {
             Wishlist wishlist = wishlistService.getWishlist(customerId);
             List<UUID> events = wishlist.getEvents();
-            return Response.ok(wishlist).build();
+            return Response.ok(events).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid customer ID").build();
         }
